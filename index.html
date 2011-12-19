@@ -79,10 +79,9 @@ $ make install</pre>
             <p id="httpServer">HTTP server</p>
             <pre class="prettyprint">
   local HTTP = require("http")
-  local Utils = require("utils")
 
   HTTP.create_server("0.0.0.0", 8080, function (req, res)
-    local body = Utils.dump({req=req,headers=req.headers}) .. "\n"
+    local body = "Hello world"
     res:write_head(200, {
       ["Content-Type"] = "text/plain",
       ["Content-Length"] = #body
@@ -104,8 +103,7 @@ $ make install</pre>
     path = "/"
   }, function (res)
     res:on('data', function (chunk)
-      print("Got some data:")
-      print(chunk)
+      p("ondata", {chunk=chunk})
     end)
     res:on("end", function ()
       res:close()
