@@ -2,11 +2,87 @@
 <html>
   <head>
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="/bootstrap-1.4.0.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/google-code-prettify/prettify.css" />
+    <script type="text/javascript" src="/google-code-prettify/prettify.js"></script>
     <title>Luvit</title>
   </head>
-  <body>
-    <p style="text-align:center;"><img src="luvit-logo.png"/></p>
-    <p style="text-align:center;">More to come soon.  See code at <a href="https://github.com/luvit/luvit">github</a>.</p>
+  <body onload="prettyPrint()">
+    <div class="container">
+      <div class="hero-unit">
+        <h1>Luvit</h1>
+        <h2>asynchronous I/O for Lua</h2>
+      </div>
+
+      <article id="examples" class="row">
+        <div class="span16"><h1>Code samples</h1></div>
+        <div class="row">
+          <div class="span8">
+            <p id="httpServer">HTTP server</p>
+            <pre class="prettyprint">
+  local HTTP = require("http")
+  local Utils = require("utils")
+
+  HTTP.create_server("0.0.0.0", 8080, function (req, res)
+    local body = Utils.dump({req=req,headers=req.headers}) .. "\n"
+    res:write_head(200, {
+      ["Content-Type"] = "text/plain",
+      ["Content-Length"] = #body
+    })
+    res:finish(body)
+  end)
+
+  print("Server listening at http://localhost:8080/")
+            </pre>
+          </div>
+          <div class="span8">
+            <p id="httpClient">HTML client</p>
+            <pre class="prettyprint">
+  local HTTP = require('http')
+
+  HTTP.request({
+    host = "127.0.0.1",
+    port = 8080,
+    path = "/"
+  }, function (res)
+    res:on('data', function (chunk)
+      print("Got some data:")
+      print(chunk)
+    end)
+    res:on("end", function ()
+      res:close()
+    end)
+  end)
+            </pre>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span8">
+            <p id="tcpEchoServer">TCP echo server</p>
+            <pre class="prettyprint">
+  local TCP = require('tcp')
+
+  local server = TCP.create_server("0.0.0.0", 8080, function (client)
+    print("Adding listener for data events")
+    client:on("data", function (chunk)
+      print("Sending chunk back to client")
+      client:write(chunk)
+    end)
+  end)
+
+  print("TCP echo server listening on port 8080")
+            </pre>
+          </div>
+          <div class="span8">
+            <p id="tcpEchoClient">TCP echo client</p>
+            <pre class="prettyprint">
+            </pre>
+          </div>
+        </div>
+      </article>
+    </div>
   </body>
 </html>
 
