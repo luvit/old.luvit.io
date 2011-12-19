@@ -23,3 +23,11 @@ h1 {
   margin-bottom: 20px;
 }
 
+#header {
+  float: left;
+}
+
+#logo {
+  float: right;
+}
+
