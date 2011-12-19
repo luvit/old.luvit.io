@@ -14,3 +14,12 @@
   border: 0;
 }
 
+h1 {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+.container > .row {
+  margin-bottom: 20px;
+}
+
