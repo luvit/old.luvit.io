@@ -1,0 +1,33 @@
+.hero-unit {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#examples.row > .row {
+  margin-left: 0px;
+}
+
+#githubRibbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
+
+h1 {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+.container > .row {
+  margin-bottom: 20px;
+}
+
+#header {
+  float: left;
+}
+
+#logo {
+  float: right;
+}
+

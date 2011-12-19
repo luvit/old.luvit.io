@@ -1,10 +1,152 @@
 <!doctype html>
 <html>
-<head>
-  <title>Luvit</title>
-</head>
-<body>
-  <p style="text-align:center;"><img src="luvit-logo.png"/></p>
-  <p style="text-align:center;">More to come soon.  See code at <a href="https://github.com/luvit/luvit">github</a>.</p>
-</body>
+  <head>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="/bootstrap-1.4.0.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/google-code-prettify/prettify.css" />
+    <script type="text/javascript" src="/google-code-prettify/prettify.js"></script>
+    <title>Luvit</title>
+  </head>
+  <body onload="prettyPrint()">
+    <a href="http://github.com/luvit/luvit">
+      <img id="githubRibbon" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" />
+    </a>
+
+    <div class="container">
+      <header class="hero-unit">
+        <div class="row">
+          <img id="logo" src="/logo.png" alt="Luvit logo" />
+          <div id="header">
+            <img src="/title.png" alt="Luvit" />
+            <h2>asynchronous I/O for Lua</h2>
+          </div>
+        </div>
+      </header>
+
+      <article id="about" class="row">
+        <div class="span16">
+          <h1>About Luvit</h1>
+          <p>
+            Luvit is an attempt to do something crazy by taking
+            <a href="http://nodejs.org">node.js'</a> awesome architecture and
+            dependencies and seeing how it fits in the Lua language.
+          </p>
+
+          <p>
+            This project is still under heavy development, but it's showing
+            promise. In initial benchmarking with a hello world server, this is
+            between 2 and 4 times faster than node.js.
+          </p>
+
+          <p>
+            Do you have a question/want to learn more? Make sure to check out
+            the <a href="http://groups.google.com/group/luvit/">mailing list</a>
+            and drop by our IRC channel, #luvit on Freenode.
+          </p>
+        </div>
+      </article>
+
+      <article id="installation" class="row">
+        <div class="span16">
+          <h1>Installation</h1>
+          <p>
+            It's easy! You can install Luvit just like you'd install any
+            other Unix application:
+          </p>
+
+          <h2>From git</h2>
+          <pre>
+$ git clone https://github.com/luvit/luvit.git
+$ cd luvit
+$ make
+$ make install</pre>
+
+          <h2>From a tarball</h2>
+          <p><a href="http://luvit.io/dist/">Download newest tarball first.</a></p>
+          <pre>
+$ tar xvf luvit-0.1.2.tar.gz
+$ cd luvit-0.1.2
+$ make
+$ make install</pre>
+        </div>
+      </article>
+
+      <article id="examples" class="row">
+        <div class="span16"><h1>Code samples</h1></div>
+        <div class="row">
+          <section class="span8">
+            <p id="httpServer">HTTP server</p>
+            <pre class="prettyprint">
+local HTTP = require("http")
+
+HTTP.create_server("0.0.0.0", 8080, function (req, res)
+  local body = "Hello world\n"
+  res:write_head(200, {
+    ["Content-Type"] = "text/plain",
+    ["Content-Length"] = #body
+  })
+  res:finish(body)
+end)
+
+print("Server listening at http://localhost:8080/")</pre>
+          </section>
+          <section class="span8">
+            <p id="httpClient">HTTP client</p>
+            <pre class="prettyprint">
+local HTTP = require('http')
+
+HTTP.request({
+  host = "127.0.0.1",
+  port = 8080,
+  path = "/"
+}, function (res)
+  res:on('data', function (chunk)
+    p("ondata", {chunk=chunk})
+  end)
+  res:on("end", function ()
+    res:close()
+  end)
+end)</pre>
+          </section>
+        </div>
+
+        <div class="row">
+          <section class="span8">
+            <p id="tcpEchoServer">TCP echo server</p>
+            <pre class="prettyprint">
+local TCP = require('tcp')
+
+local server = TCP.create_server("0.0.0.0", 8080, function (client)
+  print("Adding listener for data events")
+  client:on("data", function (chunk)
+    print("Sending chunk back to client")
+    client:write(chunk)
+  end)
+end)
+
+print("TCP echo server listening on port 8080")</pre>
+          </section>
+          <section class="span8">
+            <p id="tcpEchoClient">TCP echo client</p>
+            <pre class="prettyprint">
+local TCP = require('tcp')
+
+local client = TCP.new()
+client:connect("127.0.0.1", 8080)
+client:on("complete", function ()
+  print("Connected...")
+
+  client:read_start()
+  process.stdin:read_start()
+
+  process.stdin:pipe(client)
+  client:pipe(process.stdout)
+end)</pre>
+          </section>
+        </div>
+      </article>
+    </div>
+  </body>
 </html>
+
