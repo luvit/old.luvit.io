@@ -79,25 +79,25 @@ $ make install</pre>
           <section class="span8">
             <p id="httpServer">HTTP server</p>
             <pre class="prettyprint">
-local HTTP = require("http")
+local http = require("http")
 
-HTTP.create_server("0.0.0.0", 8080, function (req, res)
+http.createServer(function (req, res)
   local body = "Hello world\n"
   res:write_head(200, {
     ["Content-Type"] = "text/plain",
     ["Content-Length"] = #body
   })
   res:finish(body)
-end)
+end):listen(8080)
 
 print("Server listening at http://localhost:8080/")</pre>
           </section>
           <section class="span8">
             <p id="httpClient">HTTP client</p>
             <pre class="prettyprint">
-local HTTP = require('http')
+local http = require('http')
 
-HTTP.request({
+http.request({
   host = "127.0.0.1",
   port = 8080,
   path = "/"
@@ -116,33 +116,30 @@ end)</pre>
           <section class="span8">
             <p id="tcpEchoServer">TCP echo server</p>
             <pre class="prettyprint">
-local TCP = require('tcp')
+local net = require('net')
 
-local server = TCP.create_server("0.0.0.0", 8080, function (client)
+local server = net.createServer(function (client)
   print("Adding listener for data events")
   client:on("data", function (chunk)
     print("Sending chunk back to client")
     client:write(chunk)
   end)
-end)
+end):listen(8080)
 
 print("TCP echo server listening on port 8080")</pre>
           </section>
           <section class="span8">
             <p id="tcpEchoClient">TCP echo client</p>
             <pre class="prettyprint">
-local TCP = require('tcp')
+local net = require('net')
 
-local client = TCP.new()
-client:connect("127.0.0.1", 8080)
-client:on("complete", function ()
-  print("Connected...")
-
-  client:read_start()
-  process.stdin:read_start()
+local client = net.createConnection(8080, '127.0.0.1', function (err)
+  if err then error(err) end
+  process.stdin:readStart()
 
   process.stdin:pipe(client)
   client:pipe(process.stdout)
+
 end)</pre>
           </section>
         </div>
