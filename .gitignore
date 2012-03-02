@@ -1,2 +1,5 @@
-access.log
-error.log
+*.sw[op]
+.DS_Store
+*.log
+dist
+
