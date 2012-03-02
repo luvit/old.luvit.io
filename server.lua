@@ -1,6 +1,5 @@
 local http = require 'http'
 local stack = require 'stack'
-local stackStatic = require 'static'
 local url = require 'url'
 
 local PORT = 80
