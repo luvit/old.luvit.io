@@ -8,11 +8,11 @@ http.createServer(stack.stack(
 
   -- Serve static files
   require('static')('/', {
-    directory = __dirname,   -- root of static server
-    max_age = 24*60*60*1000, -- cache for 1 day
-    auto_index = "index.html",
+    root = __dirname,   -- root of static server
+    maxAge = 24*60*60*1000, -- cache for 1 day
+    autoIndex = "index.html",
     follow = true,
-    is_cacheable = function (file)
+    isCacheable = function (file)
       return true
     end,                     -- can cache served files
   })
