@@ -2,23 +2,9 @@ local http = require 'http'
 local stack = require 'stack'
 local url = require 'url'
 
-local PORT = 80
+local PORT = process.env.PORT or 8080
 
 http.createServer(stack.stack(
-
-  -- Redirect directories to index.html
-  function (req, res, continue)
-    if not req.uri then
-      req.uri = url.parse(req.url)
-    end
-    local pathname = req.uri.pathname
-    if pathname:sub(#pathname, 1) == "/" then
-      pathname = pathname .. "index.html"
-      req.uri.pathname = pathname
-      req.url = pathname .. req.uri.search
-    end
-    continue()
-  end,
 
   -- Serve static files
   require('static')('/', {
