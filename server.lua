@@ -10,6 +10,8 @@ http.createServer(stack.stack(
   require('static')('/', {
     directory = __dirname,   -- root of static server
     max_age = 24*60*60*1000, -- cache for 1 day
+    auto_index = "index.html",
+    follow = true,
     is_cacheable = function (file)
       return true
     end,                     -- can cache served files
