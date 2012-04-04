@@ -112,7 +112,7 @@ http.request({
     p("ondata", {chunk=chunk})
   end)
   res:on("end", function ()
-    res:close()
+    res:destroy()
   end)
 end)
 </code></pre>
