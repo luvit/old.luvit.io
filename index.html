@@ -107,7 +107,7 @@ print("Server listening at http://localhost:8080/")
             <p id="httpClient">HTTP client</p>
             <pre class="prettyprint"><code class="language-lua">local http = require('http')
 
-http.request({
+local req = http.request({
   host = "luvit.io",
   port = 80,
   path = "/"
@@ -119,6 +119,7 @@ http.request({
     res:destroy()
   end)
 end)
+req:done()
 </code></pre>
           </section>
         </div>
