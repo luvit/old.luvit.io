@@ -8,12 +8,13 @@ return function (app)
       local hasDate = false
       local hasServer = false
       local hasContentLength = false
+      local hasTransferEncoding = false
       for name in pairs(headers) do
         name = name:lower()
         if name == "date" then hasDate = true end
         if name == "server" then hasServer = true end
         if name == "content-length" then hasContentLength = true end
-        if name == "transfer-encoding" then hasContentLength = true end
+        if name == "transfer-encoding" then hasTransferEncoding = true end
       end
       if not hasDate then
         headers['Date'] = osDate("!%a, %d %b %Y %H:%M:%S GMT")
@@ -21,11 +22,13 @@ return function (app)
       if not hasServer then
         headers['Server'] = "Luvit " .. process.version
       end
-      if not hasContentLength then
+      if not hasContentLength or hasTransferEncoding then
         if type(body) == "string" then
           headers["Content-Length"] = #body
+          hasContentLength = true
         elseif type(body) == "table" then
           headers["Transfer-Encoding"] = "chunked"
+          hasTransferEncoding = true
           local originalStream = body
           body = iStream:new()
           originalStream:on("data", function (chunk)
@@ -36,6 +39,12 @@ return function (app)
             body:emit("end")
           end)
         end
+      end
+      if req.should_keep_alive and hasContentLength then
+        headers["Connection"] = "keep-alive"
+      else
+        headers["Connection"] = "close"
+        req.should_keep_alive = false
       end
       res(code, headers, body)
     end)

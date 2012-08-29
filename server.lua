@@ -25,6 +25,7 @@ app = require('static')(app, {
 })
 -- Log all requests
 app = require('log')(app)
+
 -- Add in missing Date and Server headers, auto chunked encoding, etc..
 app = require('cleanup')(app)
 

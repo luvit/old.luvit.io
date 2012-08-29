@@ -68,6 +68,7 @@ function web.createServer(host, port, onRequest)
   server:bind(host or "0.0.0.0", port)
   server:listen(function ()
     local client = Tcp:new()
+    local done
     server:accept(client)
     client:readStart()
     local currentField, headers, url, request
@@ -103,16 +104,13 @@ function web.createServer(host, port, onRequest)
           end
           client:write(table.concat(head))
           if type(body) ~= "table" then
-            client:shutdown()
-            client:close()
+            done(info.should_keep_alive)
           else
             body:on("data", function (chunk)
               client:write(chunk)
             end)
             body:on("end", function ()
-              client:shutdown(function ()
-                client:close()
-              end)
+              done(info.should_keep_alive)
             end)
           end
         end)
@@ -129,6 +127,21 @@ function web.createServer(host, port, onRequest)
       local nparsed = parser:execute(chunk, 0, #chunk)
       -- TODO: handle various cases here
     end)
+    client:on('end', function ()
+      parser:finish()
+    end)
+
+    done = function(keepAlive)
+      if keepAlive then
+        parser:reinitialize("request")
+      else
+        client:shutdown(function ()
+          client:close()
+        end)
+      end
+    end
+
+
   end)
   return server
 end
