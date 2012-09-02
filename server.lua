@@ -1,16 +1,11 @@
 local pathJoin = require('path').join
 local root = pathJoin(__dirname, 'public')
-local createServer = require('web').createServer
+local web = require('web')
+local tcp = require('continuable').tcp
 local PORT = process.env.PORT or 8080
 
 -- Define a simple custom app
 local function app(req, res)
-  if req.url.path == "/greet" then
-    return res(200, {
-      ["Content-Type"] = "text/plain",
-      ["Content-Length"] = 12
-    }, "Hello World\n")
-  end
   res(404, {
     ["Content-Type"] = "text/plain",
     ["Content-Length"] = 10
@@ -18,16 +13,16 @@ local function app(req, res)
 end
 
 -- Serve static files and index directories
-app = require('static')(app, {
+app = web.static(app, {
   root = __dirname,
   index = "index.html",
   autoIndex = true
 })
 -- Log all requests
-app = require('log')(app)
+app = web.log(app)
 
 -- Add in missing Date and Server headers, auto chunked encoding, etc..
-app = require('cleanup')(app)
+app = web.cleanup(app)
 
-local server = createServer("0.0.0.0", PORT, app)
-print("luvit.io listening on http://luvit.io:" .. server:getsockname().port .. "/")
+local server = tcp.createServer("0.0.0.0", 8080, web.socketHandler(app))
+print("luvit.io listening on http://luvit.io:" .. tcp.getsockname(server).port .. "/")
