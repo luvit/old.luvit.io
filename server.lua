@@ -13,16 +13,16 @@ local function app(req, res)
 end
 
 -- Serve static files and index directories
-app = web.static(app, {
+app = require('web-static')(app, {
   root = __dirname,
   index = "index.html",
   autoIndex = true
 })
 -- Log all requests
-app = web.log(app)
+app = require('web-log')(app)
 
 -- Add in missing Date and Server headers, auto chunked encoding, etc..
-app = web.cleanup(app)
+app = require('web-autoheaders')(app)
 
 local server = tcp.createServer("0.0.0.0", process.env.PORT or 8080, web.socketHandler(app))
 print("luvit.io listening on http://luvit.io:" .. tcp.getsockname(server).port .. "/")
