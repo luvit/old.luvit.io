@@ -13,3 +13,7 @@
 [submodule "modules/continuable"]
 	path = modules/continuable
 	url = https://github.com/luvit/continuable.git
+[submodule "dist"]
+	url = git@github.com:luvit/luvit-releases.git
+	ref = refs/heads/master
+	path = dist
