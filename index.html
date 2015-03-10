@@ -29,59 +29,81 @@
       <article id="about" class="row">
         <div class="span16">
           <h1>About Luvit</h1>
-          <p>
-            Luvit is an attempt to do something crazy by taking
-            <a href="http://nodejs.org">node.js'</a> awesome architecture and
-            dependencies and seeing how it fits in the Lua language.
-          </p>
+<p>The original luvit (started 2011 by <a href="https://github.com/creationix">Tim Caswell</a>) was a node.js-like programming environment, but using Luajit instead of V8.  Luvit 1.0 found it's niche in places like <a href="https://github.com/virgo-agent-toolkit">cloud monitoring</a> and scripting on slower devices like Raspberry PIs. It had nearly identical APIs to node and thus was easy to learn for developers looking for something like node, but less memory hungry.</p>
 
-          <p>
-            This project is still under heavy development, but it's showing
-            promise. In initial benchmarking with a hello world server, this is
-            between 2 and 4 times faster than node.js. Version 0.8.2 is the
-            latest release version.  
-          </p>
+<p>Luvit 2.0 is a reboot of this idea but far more flexible and configurable. The new system consists of many parts that can be used with or without the new luvit framework.</p>
 
-          <p>
-            Do you have a question/want to learn more? Make sure to check out
-            the <a href="http://groups.google.com/group/luvit/">mailing list</a>
-            and drop by our IRC channel, #luvit on Freenode.
-          </p>
-          <div style="text-align: center;margin-top:40px">
-            <p>Version 0.8.2
-              <a href="/dist/latest/luvit.tar.gz" class="button" title="Download a tarball of the source">Download</a>
-            </p>
-          </div>
-        </div>
-      </article>
+<p><a href="https://github.com/luvit/luvit">Read more</a> on luvit's project page over at Github.</p>
+
+<h2>Luvi - Lua + LibUV Integrated</h2>
+
+<p>Luvi is the C runtime of luvit and lit.  It essentially consists of <a href="">fresh bindings to libuv</a>, embedded luajit, openssl, and asset bundling using zip files appended to itself.</p>
+
+<p>Thanks to luvi, most development involving C compilers is kept at or below luvi and everything else including core luvit and lit development are done in pure lua with no required build step to test changes to core modules.</p>
+
+<p><a href="https://github.com/luvit/luvi">Read more</a> on luvi's project page over at Github.</p>
+
+
+<h2>Lit - Luvit Invention Toolkit</h2>
+
+<p>Lit is a toolkit designed to make working in the new <a href="https://github.com/luvit/luvit/">luvit</a> 2.0 ecosystem
+easy and even fun.</p>
+
+<ul class="task-list">
+<li>Lit powers the central repository at <code>wss://lit.luvit.io/</code>.</li>
+<li>Lit is used to publish new packages to the central repository.</li>
+<li>Lit is used to download and install dependencies into your local tree.</li>
+<li>Lit can be used to compile <a href="https://github.com/luvit/luvi/">luvi</a> apps from folders or zip files into
+self-executing binaries.</li>
+</ul>
+
+<p>Lit is also a luvi app and library itself and bootstraps fairly easily.  It uses it's own copy of luvi when creating new apps so you don't have to provide a luvi build yourself.</p>
+
+<p><a href="https://github.com/luvit/lit">Read more</a> on lit's project page over at Github.</p>
+
+</div></article>
 
       <article id="installation" class="row">
         <div class="span16">
-          <h1>Installation From Source</h1>
+          <h1>Getting Lit and Luvit</h1>
           <p>
-            It's easy! You can install Luvit just like you'd install any
-            other Unix application:
+            Assuming your platform is one of the supported platforms with pre-built luvi binaries, building lit and luvi is super easy and can be done on any computer without any tools required.
           </p>
 
-          <h2>From git</h2>
-          <pre><code>$ git clone https://github.com/luvit/luvit.git
-$ cd luvit
-$ make
-$ make install
-</code></pre>
+          <h2>Get Lit</h2>
 
-          <h2>From a tarball</h2>
-          <p><a href="/dist/latest/">Download newest tarball first.</a></p>
-          <pre><code>$ tar xvf luvit.tar.gz
-$ cd luvit-0.8.2
-$ make
-$ make install
-</code></pre>
-          <h1>Prebuilt Binaries</h1>
-          <p>
-            Luvit is very easy to build, but in case you don't want to bother with a toolchain on your box, we provide binaries for OSX, Ubuntu, Raspberry PI, and Windows. 
-            <a href="/dist/latest/">Latest Luvit binaries</a>.
-          </p>
+          <p>If you're on a unix system, make sure you have <code>curl</code> and <code>sh</code> and run:</p>
+
+          <pre><code>curl -L https://github.com/luvit/lit/raw/master/get-lit.sh | sh</code></pre>
+
+          <p>If you're on a windows box, open a `cmd.exe` terminal and enter:</p>
+
+          <pre><code>PowerShell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://github.com/luvit/lit/raw/master/get-lit.ps1'))"</code></pre>
+
+          <p>Supported platforms include:</p>
+
+          <ul>
+            <li>Windows 64-bit</li>
+            <li>OSX 64-bit</li>
+            <li>Linux 64-bit</li>
+            <li>FreeBSD 64-bit</li>
+            <li>Raspberry Pi (Linux arm6l)</li>
+            <li>BeagleBone Black (Linux arm7l)</li>
+          </ul>
+
+          <p>If the lit installer doesn't work for you, <a href="https://github.com/luvit/luvi#building-from-source">compile luvi from source</a> and then <a href="https://github.com/luvit/lit#building-from-source">build lit using the custom luvi</a>.</p>
+
+          <h2>Building Luvit CLI</h2>
+
+          <p>Once you have lit installed, building luvit is super simple.  To get the latest published release from the central lit package repository, simply run:</p>
+
+          <pre><code>lit make lit://luvit/luvit</code></pre>
+
+          <p>If you want the latest version from git, run:</p>
+
+          <pre><code>lit make github://luvit/luvit</code></pre>
+
+          <p>Either of these commands will build a luvit executable in your current working directory.  Move it somewhere in your path to install.</p>
         </div>
       </article>
 
@@ -157,7 +179,7 @@ net.createServer(function (client)
   client:pipe(process.stdout)
 
 end):listen(8080)
-     
+
 print("TCP echo server listening on port 8080")
 </code></pre>
           </section>
@@ -182,6 +204,13 @@ end)
 </code></pre>
           </section>
         </div>
+
+          <p>
+            Do you have a question/want to learn more? Make sure to check out
+            the <a href="http://groups.google.com/group/luvit/">mailing list</a>
+            and drop by our IRC channel, #luvit on Freenode.
+          </p>
+
       </article>
     </div>
   </body>
