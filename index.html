@@ -92,7 +92,7 @@ http.createServer(function (req, res)
   local body = "Hello world\n"
 
   res:on("error", function(err)
-    print("Error while sending a response: " .. tostring(err))
+    print("Error while sending a response: " .. err)
   end)
 
   res:writeHead(200, {
@@ -115,7 +115,7 @@ local req = http.request({
   path = "/"
 }, function (res)
   res:on("error", function(err)
-    print("Error while receiving a response: " .. tostring(err))
+    print("Error while receiving a response: " .. err)
   end)
 
   res:on("data", function (chunk)
@@ -124,7 +124,7 @@ local req = http.request({
 end)
 
 req:on("error", function(err)
-  print("Error while sending a request: " .. tostring(err))
+  print("Error while sending a request: " .. err)
 end)
 
 req:done()
